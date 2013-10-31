@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airclipp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/css/animate.min.css" rel="stylesheet" media="screen">
+    <link href="/css/style.css" rel="stylesheet" media="screen">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body>
+
+    <div class="header">
+      <div class="row">
+        <div class="container">
+          <div class="span10 offset1">
+
+            <div class="row">
+              <div class="span3 animated fadeInDown">
+                <a href="/"><img src="img/logo.png" width="100"></a>
+              </div>
+              <div class="span7">
+              	<% if (!user) { %>
+        					<a href="/auth/facebook"><p class="text-right" style="padding-top:20px;">Sign in</p></a>
+        				<% } else { %>
+        					<a href="/logout"><p class="text-right" style="padding-top:20px;">Sign out</p></a>
+        				<% } %>
+              </div>
+            </div>
+
+            <div class="tagline">
+              <div class="row">
+                <div class="span10">
+            	  <% if (!user) { %>
+                  <p class="text-center animated fadeInDown"><img src="/img/loc_graphic.png" width="250"/></p>
+      					  <p class="text-center">Location-based file sharing</p><br>
+      				  <% } else { %>
+      					  <p class="text-center">Hello, <%= user.displayName %></p><br>
+      				  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="add">
+              <div class="row">
+                <div class="span10">
+                  <center><button class="button" id="addFiles">Add Files</button></center>
+                </div>  
+              </div>
+            </div>
+
+            <div class="learn">
+              <div class="row">
+                <div class="span10">
+                  <p>Learn More</p>
+                </div>
+              </div>
+            </div> -->
+            <center><p id="copyright">Copyright Airclipp</p></center>
+
+          </div>
+        </div>  
+      </div>
+    </div>
+
+    <script src="/js/expand.js"></script>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/index.js"></script>
+  </body>
+</html>
