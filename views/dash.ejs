@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airclipp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/css/animate.min.css" rel="stylesheet" media="screen">
+    <link href="/css/style.css" rel="stylesheet" media="screen">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body>
+
+    <div class="header">
+      <div class="row">
+        <div class="container">
+          <div class="span10 offset1">
+
+            <!-- Desktop Nav -->
+
+            <div class="row hidden-phone">
+              <div class="span3 animated fadeInDown">
+                <a href="/"><img src="/img/logo.png" width="100"></a>
+              </div>
+              <div class="span7">
+	            <a href="/logout"><p class="text-right" style="padding-top:20px;">Sign out</p></a>
+              </div>
+            </div>
+
+            <!-- End Desktop Nav -->
+
+            <!-- Add the time zone of the user saved in database. Use templating to get it and format correctly from -7 to -07:00 to get time and then figure out way to get value -->
+            <time datetime="2013-11-02T23:35:15-07:00" class="age" hidden></time>
+
+            <!-- Mobile Nav -->
+
+            <div class="row visible-phone">
+              <div class="animated fadeInDown">
+                <center><a href="/"><img src="img/logo.png" width="100"></a></center>
+              </div>
+              <div>
+                <center><a href="/logout"><p style="padding-top:20px;">Sign out</p></a></center>
+              </div>
+            </div>
+
+            <!-- End Mobile Nav -->
+
+            <div class="options">
+              <div class="row">
+                <div class="span10">
+            	  <p class="text-center">Hello, <%= user.displayName %></p><br>
+            	  <center><a onClick="navigator.geolocation.getCurrentPosition(fetchFromApi);" class="refresh">Refresh</a></center>
+            	  <!-- <form class="searchFiles hidden-phone">
+		            <input class="searchbox" type="text" placeholder="Search..." />
+		          </form>
+		          <form class="searchFiles visible-phone">
+		            <input class="searchbox" type="text" placeholder="Search..." />
+		          </form> -->
+            	  <div class="files">
+            	  	<br>
+            	  	<% if (!user._json.verified) { %>
+	            	  <div class="alert" style="margin-left:5%; width:60%;">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						Please verify your account to be able to upload
+					  </div>
+				  	<% } %>
+				  	<% if (success) { %>
+	            	  <div class="alert alert-success" style="margin-left:5%; width:60%;">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						Uploaded content successfully
+					  </div>
+				  	<% } %>
+            	  	<legend class="caption">Files near you</legend>
+					<table class="filesTable table table-hover">
+			          <thead>
+			            <tr>
+			              <th>Name</th>
+			              <th>Author</th>
+			              <th>Published</th>
+			              <th>Actions</th>
+			            </tr>
+			          </thead>
+			          <tbody class="tableBody">
+				  		
+			          </tbody>
+			        </table>
+			        <div class="loading"></div>
+			        <br>
+            	  </div>
+                </div>
+              </div>
+            </div>
+
+            <br><center><p id="copyright">Copyright Airclipp</p></center>
+
+          </div>
+        </div>  
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="/js/jquery.age.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/near.js"></script>
+  </body>
+</html>
+

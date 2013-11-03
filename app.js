@@ -5,6 +5,7 @@
 
 // IMMEDIATE
 // MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
+// Allow option to choose location where file should be uploaded - use Trakr map
 // (check) Display files --> create API that takes lat and lng to display files near you
 // Dashboard, with account/profile information and options to edit files you uploaded --> gelocation coordinates --> delete option
 // (working) Timestamp to human readable text -- around the world with all timezones
