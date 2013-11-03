@@ -15,6 +15,8 @@
 // Then work on file model/schema
 // Need to think about how this can be done
 
+// For internal API read only security use a random generated token and pass it to website with templating and then that will be in use for that session
+
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
@@ -27,7 +29,9 @@ var FACEBOOK_APP_SECRET = "ba7b40249abb2d1e7959268f5ae09047";
 
 // MongoDB set up
 
-var uri = 'mongodb://localhost/airclipp'; 
+var uri = 'mongodb://localhost/airclipp';
+
+var apiAccessToken; 
 
 mongoose.connect(uri, function(err, res) {
     if(err) 
@@ -100,9 +104,6 @@ passport.use(new FacebookStrategy({
   }
 ));
 
-
-
-
 var app = express();
 
 // configure Express
@@ -139,7 +140,8 @@ app.get('/', function(req, res){
 });
 
 app.get('/near', ensureAuthenticated, function(req, res){
-  res.render('near', { user: req.user, success: false });
+  apiAccessToken = Math.random().toString(36).substring(7);
+  res.render('near', { user: req.user, success: false, apiAccessToken: apiAccessToken });
 });
 
 app.get('/upload', ensureAuthenticated, function(req, res){
@@ -193,27 +195,32 @@ app.get('/logout', function(req, res){
 
 // GET lat and long
 // return files within 1 kilometer ~(0.009 degrees) (open access API, think of security later especially with writing to db apis) 
-app.get('/files/:lat/:lng', function(req, res) {
-  // if cannot parse or error 
-  // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
-  var query = File.find();
-  var resultsArr = [];
-  var radius = 0.009;
-  query.exec(function (err, docs) {
-    if (err)
-      console.log(err);
-    else {
-      for (var i = 0; i < docs.length; i++) {
-        var split = docs[i].latlng.split(',');
-        split[0] = parseFloat(split[0], 10);
-        split[1] = parseFloat(split[1], 10);
-        if (Math.pow(split[0] - req.params.lat, 2) + Math.pow(split[1] - req.params.lng, 2) < Math.pow(radius, 2)) {
-          resultsArr.push(docs[i]);
+// Add access token parameters
+app.get('/files/:lat/:lng/:accessToken', function(req, res) {
+  if (req.params.accessToken == apiAccessToken) {
+    // if cannot parse or error 
+    // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
+    var query = File.find();
+    var resultsArr = [];
+    var radius = 0.009;
+    query.exec(function (err, docs) {
+      if (err)
+        console.log(err);
+      else {
+        for (var i = 0; i < docs.length; i++) {
+          var split = docs[i].latlng.split(',');
+          split[0] = parseFloat(split[0], 10);
+          split[1] = parseFloat(split[1], 10);
+          if (Math.pow(split[0] - req.params.lat, 2) + Math.pow(split[1] - req.params.lng, 2) < Math.pow(radius, 2)) {
+            resultsArr.push(docs[i]);
+          }
         }
       }
-    }
-    res.json(resultsArr);
-  });
+      res.json(resultsArr);
+    });
+  } else {
+    res.json({ error: "Invalid access token" });
+  }
   // Processing logic
 });
 
