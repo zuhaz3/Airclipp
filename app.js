@@ -3,15 +3,60 @@
 // Create API to read + write (add perms later)
 // Upload files with location and dashboard for user
 
+// IMMEDIATE
+// MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
+// (check) Display files --> create API that takes lat and lng to display files near you
+// Dashboard, with account/profile information and options to edit files you uploaded --> gelocation coordinates --> delete option
+// (working) Timestamp to human readable text -- around the world with all timezones
+// (Need view still) Actions for file
+// 404 not working --> fix
+// Think about distance formula and what each degree of lat lng will be. Specify a radius for the user
+// Then work on file model/schema
+// Need to think about how this can be done
+
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
   , request = require('request')
+  , mongoose = require('mongoose')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
 var FACEBOOK_APP_ID = "536020333148727"
 var FACEBOOK_APP_SECRET = "ba7b40249abb2d1e7959268f5ae09047";
 
+// MongoDB set up
+
+var uri = 'mongodb://localhost/airclipp'; 
+
+mongoose.connect(uri, function(err, res) {
+    if(err) 
+      console.log("Error connecting to MongoDB: " + err);
+    else
+      console.log('Connected to MongoDB');
+});
+
+var userSchema = mongoose.Schema({
+    name: String,
+    email: String,
+    timezone: Number,
+    verified: Boolean,
+    provider: String,
+    id: String
+});
+
+var User = mongoose.model('User', userSchema);
+
+var fileSchema = mongoose.Schema({
+    name: String,
+    description: String,
+    author: String,
+    authorId: Number,
+    latlng: String,
+    url: String,
+    timestamp: String // Change this to number for milliseconds better for future
+});
+
+var File = mongoose.model('File', fileSchema);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -37,7 +82,7 @@ passport.use(new FacebookStrategy({
     clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
     callbackURL: "http://localhost:3000/auth/facebook/callback",
-    scope: "email,user_likes,publish_actions"
+    scope: "email"
   },
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
@@ -79,24 +124,40 @@ app.configure(function() {
 
 
 app.get('/', function(req, res){
-  if (req.user) {
-    request('https://graph.facebook.com/'+req.user.id+'/friends?access_token='+req.user.accessToken, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        res.render('index', { user: req.user, friends: JSON.parse(body) });
+  if (!req.user) 
+    res.render('index', { user: req.user });
+  else {
+    User.find({ email: req.user._json.email }, function (req1, res1) {
+      if (res1[0]) res.redirect('/near');
+      else {
+        createUserInDBAndSendMail(req.user._json);
+        res.redirect('/near');
       }
     });
   }
-  else {
-    res.render('index', { user: req.user });
-  }
 });
 
-app.get('/account', ensureAuthenticated, function(req, res){
-  res.render('account', { user: req.user });
+app.get('/near', ensureAuthenticated, function(req, res){
+  res.render('near', { user: req.user, success: false });
 });
 
-app.get('/login', function(req, res){
-  res.render('login', { user: req.user });
+app.get('/upload', ensureAuthenticated, function(req, res){
+  res.render('upload', { user: req.user });
+});
+
+app.get('/dash', ensureAuthenticated, function(req, res){
+  res.render('dash', { user: req.user, success: false });
+});
+
+app.post('/upload', function(req, res) {
+  var newFile = new File(req.body);
+  newFile.save(function(err) { 
+    if (err) 
+      console.log(err); 
+    else {
+      res.redirect('/near');
+    }
+  });
 });
 
 // GET /auth/facebook
@@ -117,7 +178,7 @@ app.get('/auth/facebook',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/facebook/callback', 
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  passport.authenticate('facebook', { failureRedirect: '/' }),
   function(req, res) {
     res.redirect('/');
   });
@@ -126,6 +187,36 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+
+// API METHODS
+
+// GET lat and long
+// return files within 1 kilometer ~(0.009 degrees) (open access API, think of security later especially with writing to db apis) 
+app.get('/files/:lat/:lng', function(req, res) {
+  // if cannot parse or error 
+  // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
+  var query = File.find();
+  var resultsArr = [];
+  var radius = 0.009;
+  query.exec(function (err, docs) {
+    if (err)
+      console.log(err);
+    else {
+      for (var i = 0; i < docs.length; i++) {
+        var split = docs[i].latlng.split(',');
+        split[0] = parseFloat(split[0], 10);
+        split[1] = parseFloat(split[1], 10);
+        if (Math.pow(split[0] - req.params.lat, 2) + Math.pow(split[1] - req.params.lng, 2) < Math.pow(radius, 2)) {
+          resultsArr.push(docs[i]);
+        }
+      }
+    }
+    res.json(resultsArr);
+  });
+  // Processing logic
+});
+
+// WE NEED A 404
 
 app.listen(3000);
 
@@ -137,5 +228,65 @@ app.listen(3000);
 //   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  res.redirect('/')
+}
+
+function createUserInDBAndSendMail(user) {
+  // Send User Email
+  var path           = require('path')
+    , templatesDir   = path.resolve(__dirname, 'templates')
+    , emailTemplates = require('email-templates')
+    , nodemailer     = require('nodemailer');
+
+  emailTemplates(templatesDir, function(err, template) {
+
+    if (err) {
+      console.log(err);
+    } else {
+
+      // ## Send a single email
+      user.provider = "facebook";
+      var newUser = new User(user);
+      newUser.save(function(err) { if (err) console.log(err); });
+
+      // Prepare nodemailer transport object
+      var transport = nodemailer.createTransport("SMTP", {
+        service: "Gmail",
+        auth: {
+          user: "teamairclipp@gmail.com",
+          pass: "haha1234"
+        }
+      });
+
+      // An example users object with formatted email function
+      var locals = {
+        email: user.email,
+        name: user.name
+      };
+
+      // Send a single email
+      template('welcome', locals, function(err, html, text) {
+        if (err) {
+          console.log(err);
+        } else {
+          transport.sendMail({
+            from: 'Team Airclipp <welcome@airclipp.com>',
+            to: locals.email,
+            subject: 'Welcome to Airclipp',
+            html: html,
+            // generateTextFromHTML: true,
+            text: text
+          }, function(err, responseStatus) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(responseStatus.message);
+            }
+          });
+        }
+      });
+
+    }
+
+  });
 }

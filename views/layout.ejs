@@ -19,3 +19,26 @@
 		<%- body %>
 	</body>
 </html>
+
+<!-- Friends Unused Code
+
+  // if (req.user) {
+  //   request('https://graph.facebook.com/'+req.user.id+'/friends?access_token='+req.user.accessToken, function (error, response, body) {
+  //     if (!error && response.statusCode == 200) {
+  //       res.render('index', { user: req.user, friends: JSON.parse(body) });
+  //     }
+  //   });
+  // }
+  // else {
+  //   res.render('index', { user: req.user });
+  // }
+
+<p><%= JSON.stringify(user) %></p>
+<p><%= friends.data.length %></p>
+<p><%= friends.paging.next %></p>
+<% for(var i = 0; i < friends.data.length; i++) { %>
+	<li><%= friends.data[i].name %></li>
+	<li><%= friends.data[i].id %></li>
+<% } %>
+
+-->

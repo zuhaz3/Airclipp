@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airclipp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/css/animate.min.css" rel="stylesheet" media="screen">
+    <link href="/css/style.css" rel="stylesheet" media="screen">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body>
+
+    <div class="header">
+      <div class="row">
+        <div class="container">
+          <div class="span10 offset1">
+
+            <!-- Desktop Nav -->
+
+            <div class="row hidden-phone">
+              <div class="span3 animated fadeInDown">
+                <a href="/"><img src="/img/logo.png" width="100"></a>
+              </div>
+              <div class="span7">
+	              <a href="/logout"><p class="text-right" style="padding-top:20px;">Sign out</p></a>
+              </div>
+            </div>
+
+            <!-- End Desktop Nav -->
+
+            <!-- Mobile Nav -->
+
+            <div class="row visible-phone">
+              <div class="animated fadeInDown">
+                <center><a href="/"><img src="img/logo.png" width="100"></a></center>
+              </div>
+              <div>
+                <center><a href="/logout"><p style="padding-top:20px;">Sign out</p></a></center>
+              </div>
+            </div>
+
+            <!-- End Mobile Nav -->
+
+            <div class="options">
+              <div class="row">
+                <div class="span10">
+            	  <p class="text-center">Hello, <%= user.displayName %></p><br>
+            	  <!-- <form class="searchFiles hidden-phone">
+		            <input class="searchbox" type="text" placeholder="Search..." />
+		          </form>
+		          <form class="searchFiles visible-phone">
+		            <input class="searchbox" type="text" placeholder="Search..." />
+		          </form> -->
+            	  <div class="files">
+            	  	<br>
+            	  	<legend class="caption">Upload file</legend>
+                  <div class="upload">
+                    <form class="uploadForm" action="/upload" method="post">
+                      <input type="text" id="name" placeholder="Name of file..." name="name" required /><br>
+                      <textarea rows="3" id="description" name="description" placeholder="Description..."></textarea>
+					            <button type="button" class="btn uploadBtn">
+                        <img src="img/upload.png" width="100"><br>
+                        Upload
+                      </button>
+                      <input type="hidden" id="latlng" name="latlng"/>
+                      <input type="hidden" id="imgUrl" name="url"/>
+                      <input type="hidden" id="author" name="author" value="<%= user.displayName %>" />
+                      <input type="hidden" id="authorId" name="authorId" value="<%= user.id %>" />
+                      <input type="hidden" id="timestamp" name="timestamp" value="<%= user.id %>" />
+                      <br>
+                      <br>
+                      <button type="button" id="submitUpload" class="btn reg-btn">Submit</button>
+                    </form>
+                  </div>
+                  <br>
+            	  </div>
+                </div>
+              </div>
+            </div>
+
+            <br><center><p id="copyright">Copyright Airclipp</p></center><br><br><br>
+
+          </div>
+        </div>  
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/jquery.simple-text-rotator.min.js"></script>
+    <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+    <script src="/js/dateformat.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/upload.js"></script>
+  </body>
+</html>
+

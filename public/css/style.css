@@ -20,11 +20,129 @@ p, h1, h2 {
     color: black;
     line-height: 55px; }
 
+.options p {
+  padding-left:5%;
+  padding-right:5%;
+  font-size: 36px;
+  font-weight: 100;
+  color: black;
+  line-height: 55px; }
+
+.upload {
+  margin-right: 5%;
+  margin-left: 5%; }
+
+.uploadBtn {
+  width: 100%; 
+  height: 200px;
+  background: #E8E8E8;
+  box-shadow: none;
+  border: none; 
+   border: 2px dashed #4f07c8;
+   border-radius: 10px;
+   box-shadow: 0 0 0 4px #E8E8E8; }
+
+.uploadBtn:hover {
+  background: #F0F0F0;
+  box-shadow: 0 0 0 4px #F0F0F0;
+}
+
+.files {
+  background-color: #F0F0F0;
+  width: 80%;
+  margin-left:10%;
+  margin-right:10%; 
+  -moz-border-radius: 10px;
+  border-radius: 10px; }
+
+.files p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #505050; }
+
+.caption {
+  margin-left:5%;
+  margin-right:5%;
+  width:90%;
+  font-family: "Open Sans", sans-serif;
+}
+
+.filesTable {
+  margin-left:5%;
+  margin-right:5%;
+  width:90%;
+  font-family: "Open Sans", sans-serif; }
+
+.searchFiles input {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  height: 30px;
+  box-shadow: none;
+  color: #505050;
+  margin-left:10%;
+  font-family: "Open Sans", sans-serif; }
+
+.uploadForm input {
+  width: 97%;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  height: 30px;
+  box-shadow: none;
+  color: #505050;
+  font-family: "Open Sans", sans-serif; 
+}
+
+.uploadForm textarea {
+  width: 97%;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: none;
+  color: #505050;
+  font-family: "Open Sans", sans-serif; 
+}
+
+.reg-btn {
+  color: black;
+  border: #4f07c8;
+  border-radius:10px;
+  border-style: solid;
+  border-width: 2px;
+  padding: 20px 30px;
+  background: transparent;
+}
+
+.reg-btn:hover {
+  background: #4f07c8;
+  border: #4f07c8;
+  border-radius:9px;
+  border-style: solid;
+  border-width: 2px;
+  color:white;
+}
+
 ::-webkit-input-placeholder {
-  color: black !important; }
+   color: #ccc;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: #ccc;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #ccc;  
+}
+
+:-ms-input-placeholder {  
+   color: #ccc;  
+}
 
 .add {
   margin-top: 120px; }
+
+.refresh:hover {
+  /* cursor: progress; is pretty cool */
+  cursor:pointer;
+}
 
 .button {
   background-color: transparent;

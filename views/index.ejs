@@ -19,9 +19,11 @@
         <div class="container">
           <div class="span10 offset1">
 
-            <div class="row">
+            <!-- Desktop Nav -->
+
+            <div class="row hidden-phone">
               <div class="span3 animated fadeInDown">
-                <a href="/"><img src="img/logo.png" width="100"></a>
+                <a href="/"><img src="/img/logo.png" width="100"></a>
               </div>
               <div class="span7">
               	<% if (!user) { %>
@@ -32,12 +34,31 @@
               </div>
             </div>
 
+            <!-- End Desktop Nav -->
+
+            <!-- Mobile Nav -->
+
+            <div class="row visible-phone">
+              <div class="animated fadeInDown">
+                <center><a href="/"><img src="img/logo.png" width="100"></a></center>
+              </div>
+              <div>
+                <% if (!user) { %>
+                  <center><a href="/auth/facebook"><p style="padding-top:20px;">Sign in</p></a></center>
+                <% } else { %>
+                  <center><a href="/logout"><p style="padding-top:20px;">Sign out</p></a></center>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- End Mobile Nav -->
+
             <div class="tagline">
               <div class="row">
                 <div class="span10">
             	  <% if (!user) { %>
                   <p class="text-center animated fadeInDown"><img src="/img/loc_graphic.png" width="250"/></p>
-      					  <p class="text-center">Location-based file sharing</p><br>
+      					  <p class="text-center">Location-based <span class="rotate">file sharing, commerce, tourism, deals, business</span></p><br>
       				  <% } else { %>
       					  <p class="text-center">Hello, <%= user.displayName %></p><br>
       				  <% } %>
@@ -67,9 +88,9 @@
       </div>
     </div>
 
-    <script src="/js/expand.js"></script>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/jquery.simple-text-rotator.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/index.js"></script>
   </body>
