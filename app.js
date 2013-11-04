@@ -153,10 +153,11 @@ app.get('/dash', ensureAuthenticated, function(req, res){
   res.render('dash', { user: req.user, success: false, apiAccessToken: apiAccessToken });
 });
 
-app.post('/deleteFile/:fileId/:accessToken', ensureAuthenticated, function(req, res) {
+app.post('/deleteFile/:accessToken', ensureAuthenticated, function(req, res) {
   if (req.params.accessToken == apiAccessToken) {
-    File.remove({ _id: req.params.fileId }, function (err) {
-      res.redirect('/dash');
+    File.remove({ _id: req.body.fileId }, function (err) {
+      if (err)
+        console.log(err);
     });
   } else {
     console.log('Invalid access token');

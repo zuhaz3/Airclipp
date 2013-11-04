@@ -35,5 +35,19 @@ function fetchFromApi(position) {
 
 function deleteFile(fileId) {
 	// Use AJAX here to delete file
-	console.log('deleting file: ' + fileId);
+	$('.tableBody').empty();
+  	$('.loading').html("<br><center><img src='/img/loading.gif' width='50'/></center><br><br>");
+	$.ajax({ 
+       url: '/deleteFile/' + apiAccessToken,
+       type: 'POST',
+       cache: false, 
+       data: { fileId: fileId }, 
+       success: function(data){
+		  navigator.geolocation.getCurrentPosition(fetchFromApi);
+       }
+       , error: function(jqXHR, textStatus, err){
+          alert('Error deleting file.');
+		  navigator.geolocation.getCurrentPosition(fetchFromApi);
+       }
+    });
 }
