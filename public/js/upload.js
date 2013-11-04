@@ -13,6 +13,28 @@ $(document).ready(function () {
     });
   });
 
+  $(".uploadMultipleBtn").click(function() {
+    filepicker.pickMultiple(function(filesPicked) {
+      console.log(filesPicked);
+      $("#imgUrl").attr('value',filesPicked.url);
+      $(".uploadBtn").html('<img src="img/upload.png" width="100"><br>Uploaded ');
+      if (filesPicked.length > 4) 
+        $(".uploadBtn").html('<img src="img/upload.png" width="100"><br>Uploaded ' + filesPicked.length + ' files');
+      else {
+        for (var i = 0; i < filesPicked.length; i++) {
+          if (i == filesPicked.length - 1)
+            $(".uploadBtn").append('' + filesPicked[i].filename);  
+          else 
+            $(".uploadBtn").append('' + filesPicked[i].filename + ', ');
+        }
+      }
+      if ($('#name').val() == '') {
+        var split = filesPicked[0].filename.split('.');
+        $('#name').val(split[0]);
+      }
+    });
+  });
+
   if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition(appendPosition);
   else {
