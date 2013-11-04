@@ -4,7 +4,8 @@
 // Upload files with location and dashboard for user
 
 // IMMEDIATE
-// USE Geocoding for geofencing (as in use the city) so less load on server when looking up all files --> just look up files in city will be easier
+// Add editing for dashboard
+// USE Geocoding for geofencing (as in use the city) so less load on server when looking up all files --> just look up files in city (later more specific geofencing) will be easier
 // MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
 // Allow option to choose location where file should be uploaded - use Trakr map
 // Also LATER allow options for payments, encryption etc. 
@@ -160,6 +161,9 @@ app.post('/deleteFile/:accessToken', ensureAuthenticated, function(req, res) {
     File.remove({ _id: req.body.fileId }, function (err) {
       if (err)
         console.log(err);
+      else {
+        res.redirect('/dash');
+      }
     });
   } else {
     console.log('Invalid access token');
@@ -233,7 +237,7 @@ app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res)
       res.json(resultsArr);
     });
   } else {
-    res.json({ error: "Invalid access token. Note: Some men just want to watch the world burn. Don't be one of them." });
+    res.json({ error: "Invalid access token. Note: Some men (and women) just want to watch the world burn. Don't be one of them." });
   }
   // Processing logic
 });

@@ -4,7 +4,6 @@ $(document).ready(function () {
 
   $(".uploadBtn").click(function() {
     filepicker.pick(function(filePicked) {
-      console.log(filePicked);
       $("#imgUrl").attr('value',filePicked.url);
       $(".uploadBtn").html('<img src="img/upload.png" width="100"><br>Uploaded ' + filePicked.filename);
       if ($('#name').val() == '') {

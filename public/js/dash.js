@@ -24,7 +24,7 @@ function fetchFromApi(position) {
 	  				var html =  "<tr>";
 					html +=        "<td>" + data[i].name + "</td>";
 					html +=        "<td>" + (new Date(data[i].timestamp)).toLocaleDateString() + "</td>";
-					html +=        "<td><a href='" + data[i].url + "' download>Download</a> - <a href='#' onClick='deleteFile(\"" + data[i]._id + "\")'>Delete</a></td>";
+					html +=        "<td><a href='" + data[i].url + "' download>Download</a> &middot; <a href='#'>Edit</a> &middot; <a href='#' onClick='deleteFile(\"" + data[i]._id + "\")'>Delete</a></td>";
 					html +=      "</tr>";
 				 	$('.tableBody').append(html); 
 				}
@@ -35,6 +35,7 @@ function fetchFromApi(position) {
 
 function deleteFile(fileId) {
 	// Use AJAX here to delete file
+	$('.loading').show();
 	$('.tableBody').empty();
   	$('.loading').html("<br><center><img src='/img/loading.gif' width='50'/></center><br><br>");
 	$.ajax({ 
@@ -46,7 +47,7 @@ function deleteFile(fileId) {
 		  navigator.geolocation.getCurrentPosition(fetchFromApi);
        }
        , error: function(jqXHR, textStatus, err){
-          alert('Error deleting file.');
+          console.log('Error deleting file.' + err);
 		  navigator.geolocation.getCurrentPosition(fetchFromApi);
        }
     });
