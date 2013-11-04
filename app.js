@@ -233,7 +233,7 @@ app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res)
       res.json(resultsArr);
     });
   } else {
-    res.json({ error: "Invalid access token" });
+    res.json({ error: "Invalid access token. Note: Some men just want to watch the world burn. Don't be one of them." });
   }
   // Processing logic
 });
