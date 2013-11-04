@@ -4,6 +4,8 @@
 // Upload files with location and dashboard for user
 
 // IMMEDIATE
+// Add bookmarks panel
+// Add "attach multiple files" option in upload page
 // Add editing for dashboard
 // USE Geocoding for geofencing (as in use the city) so less load on server when looking up all files --> just look up files in city (later more specific geofencing) will be easier
 // MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
