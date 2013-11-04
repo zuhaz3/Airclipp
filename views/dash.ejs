@@ -73,12 +73,11 @@
 						Uploaded content successfully
 					  </div>
 				  	<% } %>
-            	  	<legend class="caption">Files near you</legend>
-					<table class="filesTable table table-hover">
+            	 <legend class="caption">Your uploaded files</legend>
+					     <table class="filesTable table table-hover">
 			          <thead>
 			            <tr>
 			              <th>Name</th>
-			              <th>Author</th>
 			              <th>Published</th>
 			              <th>Actions</th>
 			            </tr>
@@ -104,10 +103,12 @@
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="/js/jquery.age.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/index.js"></script>
-    <script src="/js/near.js"></script>
+    <script type="text/javascript">
+      var apiAccessToken = "<%= apiAccessToken %>";
+    </script>
+    <script src="/js/dash.js"></script>
   </body>
 </html>
 

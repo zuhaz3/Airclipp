@@ -149,10 +149,21 @@ app.get('/upload', ensureAuthenticated, function(req, res){
 });
 
 app.get('/dash', ensureAuthenticated, function(req, res){
-  res.render('dash', { user: req.user, success: false });
+  apiAccessToken = Math.random().toString(36).substring(7);
+  res.render('dash', { user: req.user, success: false, apiAccessToken: apiAccessToken });
 });
 
-app.post('/upload', function(req, res) {
+app.post('/deleteFile/:fileId/:accessToken', ensureAuthenticated, function(req, res) {
+  if (req.params.accessToken == apiAccessToken) {
+    File.remove({ _id: req.params.fileId }, function (err) {
+      res.redirect('/dash');
+    });
+  } else {
+    console.log('Invalid access token');
+  }
+});
+
+app.post('/upload', ensureAuthenticated, function(req, res) {
   var newFile = new File(req.body);
   newFile.save(function(err) { 
     if (err) 
@@ -196,7 +207,7 @@ app.get('/logout', function(req, res){
 // GET lat and long
 // return files within 1 kilometer ~(0.009 degrees) (open access API, think of security later especially with writing to db apis) 
 // Add access token parameters
-app.get('/files/:lat/:lng/:accessToken', function(req, res) {
+app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res) {
   if (req.params.accessToken == apiAccessToken) {
     // if cannot parse or error 
     // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
@@ -222,6 +233,17 @@ app.get('/files/:lat/:lng/:accessToken', function(req, res) {
     res.json({ error: "Invalid access token" });
   }
   // Processing logic
+});
+
+app.get('/user/uploads', ensureAuthenticated, function(req, res) {
+  var query = File.find({ authorId: req.user.id });
+  query.exec(function (err, docs) {
+    if (err)
+      console.log(err);
+    else {
+      res.json(docs);
+    }
+  });
 });
 
 // WE NEED A 404
