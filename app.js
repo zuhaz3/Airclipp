@@ -4,8 +4,10 @@
 // Upload files with location and dashboard for user
 
 // IMMEDIATE
+// USE Geocoding for geofencing (as in use the city) so less load on server when looking up all files --> just look up files in city will be easier
 // MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
 // Allow option to choose location where file should be uploaded - use Trakr map
+// Also LATER allow options for payments, encryption etc. 
 // (check) Display files --> create API that takes lat and lng to display files near you
 // Dashboard, with account/profile information and options to edit files you uploaded --> gelocation coordinates --> delete option
 // (working) Timestamp to human readable text -- around the world with all timezones

@@ -31,6 +31,8 @@ $(document).ready(function () {
     } else if ($('#name').val() != '') {
       $('#timestamp').val((new Date()).format("isoDateTime"));
       $('.uploadForm').submit();
+    } else {
+      alert("Please enter a name for your file!");
     }
   });
 });
