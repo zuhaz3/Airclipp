@@ -2,16 +2,19 @@
 // Use socket.io to make everything realtime
 // Create API to read + write (add perms later)
 // Upload files with location and dashboard for user
+// Future analytics system for each file with robust services for big business
+// Verification request for large businesses and also for affiliate marketing paid plans.
 
 // IMMEDIATE
+// Add /edit/:fileId to edit file thats within the users domain to edit --> should therefore require accessToken
 // Need separate mobile APIs --> ones that arent really that secure but cant be access by other apps, so appspecific by sending some sort of token
 // Eliminate Filepicker -> Use own uploading service with mongodb gridfs or just folders of our own with write stream
 // Add bookmarks panel
 // Add "attach multiple files" option in upload page
+// Allow option to choose location where file should be uploaded - use Trakr map
 // Add editing for dashboard
 // USE Geocoding for geofencing (as in use the city) so less load on server when looking up all files --> just look up files in city (later more specific geofencing) will be easier
 // MOMENT JS NEEDED FOR READABLE TIME WITH THEIR time attr and also remove all other time libraries and fix it up completely
-// Allow option to choose location where file should be uploaded - use Trakr map
 // Also LATER allow options for payments, encryption etc. 
 // (check) Display files --> create API that takes lat and lng to display files near you
 // Dashboard, with account/profile information and options to edit files you uploaded --> gelocation coordinates --> delete option

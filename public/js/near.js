@@ -4,6 +4,8 @@ $(document).ready(function () {
 
   $('.loading').html("<br><center><img src='/img/loading.gif' width='50'/></center><br><br>");
 
+  $('.refresh').hide();
+
   if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition(fetchFromApi);
   else 
@@ -32,6 +34,12 @@ function fetchFromApi(position) {
 				 	$('.tableBody').append(html); 
 				}
 	  		}
+	  		$('.refresh').show();
 	    });
     }
+}
+
+function refresh() {
+	$('.refresh').hide();
+	navigator.geolocation.getCurrentPosition(fetchFromApi);
 }

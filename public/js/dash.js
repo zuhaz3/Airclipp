@@ -1,6 +1,8 @@
 $(document).ready(function () {
 
   $('.loading').html("<br><center><img src='/img/loading.gif' width='50'/></center><br><br>");
+  
+  $('.refresh').hide();
 
   if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition(fetchFromApi);
@@ -29,6 +31,7 @@ function fetchFromApi(position) {
 				 	$('.tableBody').append(html); 
 				}
 	  		}
+	  		$('.refresh').show();
 	    });
     }
 }
@@ -51,4 +54,9 @@ function deleteFile(fileId) {
 		  navigator.geolocation.getCurrentPosition(fetchFromApi);
        }
     });
+}
+
+function refresh() {
+	$('.refresh').hide();
+	navigator.geolocation.getCurrentPosition(fetchFromApi);
 }
