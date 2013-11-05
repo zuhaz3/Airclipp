@@ -14,7 +14,7 @@ $(document).ready(function () {
 function fetchFromApi(position) {
 	$('.tableBody').empty();
   	$('.loading').html("<br><center><img src='/img/loading.gif' width='50'/></center><br><br>");
-  	if (position == null) 
+  	if (position == null)
   		$('.files').html('<p>Sorry, but geolocation is unsupported on this device. Please try another device.</p>');
   	else {
 	    $.getJSON('http://localhost:3000/files/' + position.coords.latitude + '/' + position.coords.longitude + '/' + apiAccessToken, function (data) {

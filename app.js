@@ -4,6 +4,8 @@
 // Upload files with location and dashboard for user
 
 // IMMEDIATE
+// Need separate mobile APIs --> ones that arent really that secure but cant be access by other apps, so appspecific by sending some sort of token
+// Eliminate Filepicker -> Use own uploading service with mongodb gridfs or just folders of our own with write stream
 // Add bookmarks panel
 // Add "attach multiple files" option in upload page
 // Add editing for dashboard
@@ -183,6 +185,11 @@ app.post('/upload', ensureAuthenticated, function(req, res) {
   });
 });
 
+app.get('/bookmarks', ensureAuthenticated, function(req, res){
+  apiAccessToken = Math.random().toString(36).substring(7);
+  res.render('bookmarks', { user: req.user, success: false, apiAccessToken: apiAccessToken });
+});
+
 // GET /auth/facebook
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  The first step in Facebook authentication will involve
@@ -256,6 +263,18 @@ app.get('/user/uploads', ensureAuthenticated, function(req, res) {
 });
 
 // WE NEED A 404
+
+// app.use(function(err, req, res, next){
+//   // special-case 404s,
+//   // remember you could
+//   // render a 404 template here
+//   if (404 == err.status) {
+//     res.statusCode = 404;
+//     res.redirect('/');
+//   } else {
+//     next(err);
+//   }
+// });
 
 app.listen(3000);
 
