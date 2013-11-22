@@ -5,7 +5,11 @@
 // Future analytics system for each file with robust services for big business
 // Verification request for large businesses and also for affiliate marketing paid plans.
 
+// For deploying, add to package.json and add Procfile
+
 // IMMEDIATE
+// Have file be associated with multiple locations
+// Sort by feature - date, profile -> verified, upvotes, likes system, title alpha
 // Add /edit/:fileId to edit file thats within the users domain to edit --> should therefore require accessToken
 // Need separate mobile APIs --> ones that arent really that secure but cant be access by other apps, so appspecific by sending some sort of token
 // Eliminate Filepicker -> Use own uploading service with mongodb gridfs or just folders of our own with write stream
@@ -32,6 +36,7 @@ var express = require('express')
   , util = require('util')
   , request = require('request')
   , mongoose = require('mongoose')
+  , geocoder = require('geocoder')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
 var FACEBOOK_APP_ID = "536020333148727"
@@ -50,6 +55,7 @@ mongoose.connect(uri, function(err, res) {
       console.log('Connected to MongoDB');
 });
 
+// Add bookmarks array field for bookmarked IDs
 var userSchema = mongoose.Schema({
     name: String,
     email: String,
@@ -64,6 +70,7 @@ var User = mongoose.model('User', userSchema);
 var fileSchema = mongoose.Schema({
     name: String,
     description: String,
+    formatted_address: String,
     author: String,
     authorId: Number,
     latlng: String,
@@ -178,13 +185,17 @@ app.post('/deleteFile/:accessToken', ensureAuthenticated, function(req, res) {
 });
 
 app.post('/upload', ensureAuthenticated, function(req, res) {
-  var newFile = new File(req.body);
-  newFile.save(function(err) { 
-    if (err) 
-      console.log(err); 
-    else {
-      res.redirect('/near');
-    }
+  var latlng = req.body.latlng.split(',');
+  geocoder.reverseGeocode( latlng[0], latlng[1], function ( err, data ) {
+    req.body.formatted_address = data.results[1].formatted_address;
+    var newFile = new File(req.body);
+    newFile.save(function(err) { 
+      if (err) 
+        console.log(err); 
+      else {
+        res.redirect('/near');
+      }
+    });
   });
 });
 
@@ -230,6 +241,7 @@ app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res)
   if (req.params.accessToken == apiAccessToken) {
     // if cannot parse or error 
     // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
+    // Add geocoding here for the city
     var query = File.find();
     var resultsArr = [];
     var radius = 0.009;
@@ -266,6 +278,11 @@ app.get('/user/uploads', ensureAuthenticated, function(req, res) {
 });
 
 // WE NEED A 404
+
+app.get('/:id', function(req, res) {
+  // Or maybe a could not find req.params.id
+  res.redirect('/');
+});
 
 // app.use(function(err, req, res, next){
 //   // special-case 404s,
