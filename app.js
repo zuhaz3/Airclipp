@@ -332,7 +332,7 @@ function createUserInDBAndSendMail(user) {
         service: "Gmail",
         auth: {
           user: "teamairclipp@gmail.com",
-          pass: "haha1234"
+          pass: "[OMMITTED]"
         }
       });
 

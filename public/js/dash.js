@@ -58,5 +58,8 @@ function deleteFile(fileId) {
 
 function refresh() {
 	$('.refresh').hide();
-	navigator.geolocation.getCurrentPosition(fetchFromApi);
+	if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(fetchFromApi);
+    else 
+      $('.files').html('<p>Sorry, but geolocation is unsupported on this device. Please try another device.</p>');
 }
