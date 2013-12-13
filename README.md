@@ -3,8 +3,10 @@ Airclipp
 
 Location-based file sharing
 
-To run: 
+To run:
 
 npm install
-open new tab and run: mongod
+
+mongod (in new tab)
+
 node app
