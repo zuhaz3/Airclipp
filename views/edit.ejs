@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airclipp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/vendor/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/css/vendor/animate.min.css" rel="stylesheet" media="screen">
+    <link href="/css/style.css" rel="stylesheet" media="screen">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body>
+
+    <div class="header">
+      <div class="row">
+        <div class="container">
+          <div class="span10 offset1">
+
+            <!-- Desktop Nav -->
+
+            <div class="row hidden-phone">
+              <div class="span3 animated fadeInDown">
+                <a href="/"><img src="/img/logo.png" width="100"></a>
+              </div>
+              <div class="span7">
+                <div class="btn-group pull-right" style="margin-top:11px;">
+                  <button class="dropdown-toggle" data-toggle="dropdown" style="background:none;border:none;box-shadow:none;"><img src="<%= user.profPic %>" class="circle" width="28" style="margin-right:4px"/> <%=user.displayName %> <span class="caret" style="margin-top:11px;"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="/logout"><i class="icon-off"></i> Sign out</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/dash"><i class="icon-home"></i> Dashboard</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- End Desktop Nav -->
+
+            <!-- Mobile Nav -->
+
+            <div class="row visible-phone">
+              <div class="animated fadeInDown">
+                <center><a href="/"><img src="/img/logo.png" width="100"></a></center>
+              </div>
+              <div>
+                <center>
+                <div class="btn-group" style="margin-top:11px;">
+                  <button class="dropdown-toggle" data-toggle="dropdown" style="background:none;border:none;box-shadow:none;"><img src="<%= user.profPic %>" class="circle" width="28" style="margin-right:4px"/> <%=user.displayName %> <span class="caret" style="margin-top:11px;"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="/logout" class="text-left"><i class="icon-off"></i> Sign out</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/dash" class="text-left"><i class="icon-home"></i> Dashboard</a></li>
+                  </ul>
+                </div>
+              </center>
+              </div>
+            </div>
+
+            <!-- End Mobile Nav -->
+
+            <div class="options">
+              <div class="row">
+                <div class="span10">
+                <hr><br>
+                <ul class="breadcrumb">
+                  <li><a href="/dash">File</a> <span class="divider">/</span></li>
+                  <li class="active">Edit</li>
+                </ul>
+                <!-- <form class="searchFiles hidden-phone">
+                <input class="searchbox" type="text" placeholder="Search..." />
+              </form>
+              <form class="searchFiles visible-phone">
+                <input class="searchbox" type="text" placeholder="Search..." />
+              </form> -->
+                <div class="files load">
+                  <br>
+                  <div class="loading"></div>
+                  <br>
+                </div>
+                <div class="files didLoad" style="display:none">
+                  <br>
+                  <legend class="caption">Edit file</legend>
+                  <div class="upload">
+                    <form class="uploadForm" action="/edit" method="post">
+                      <input type="text" id="name" placeholder="Name of file..." name="name" required /><br>
+                      <textarea rows="3" id="description" name="description" placeholder="Description..."></textarea>
+                      <br>
+                      <br>
+                      <input type="hidden" id="fileId" name="fileId" />
+                      <button type="button" id="submitUpdate" class="btn reg-btn">Update</button>
+                    </form>
+                  </div>
+                  <br>
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <br><center><p id="copyright">&copy; 2013 Airclipp</p></center><br><br><br>
+
+          </div>
+        </div>  
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/vendor/jquery.simple-text-rotator.min.js"></script>
+    <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+    <script src="/js/vendor/dateformat.js"></script>
+    <script src="/js/vendor/bootstrap.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script type="text/javascript">
+      var apiAccessToken = "<%= apiAccessToken %>";
+    </script>
+    <script src="/js/edit.js"></script>
+  </body>
+</html>
+

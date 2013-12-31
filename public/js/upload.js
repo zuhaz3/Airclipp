@@ -3,8 +3,9 @@ $(document).ready(function () {
   filepicker.setKey('AmNzzMPMVTSO3t7QyoIwdz');
 
   $(".uploadBtn").click(function() {
-    filepicker.pick(function(filePicked) {
+    filepicker.pick({services:['COMPUTER']}, function(filePicked) {
       $("#imgUrl").attr('value',filePicked.url);
+      console.log(filePicked);
       $(".uploadBtn").html('<img src="img/upload.png" width="100"><br>Uploaded ' + filePicked.filename);
       if ($('#name').val() == '') {
         var split = filePicked.filename.split('.');
@@ -14,8 +15,7 @@ $(document).ready(function () {
   });
 
   $(".uploadMultipleBtn").click(function() {
-    filepicker.pickMultiple(function(filesPicked) {
-      console.log(filesPicked);
+    filepicker.pickMultiple({services:['COMPUTER']}, function(filesPicked) {
       $("#imgUrl").attr('value',filesPicked.url);
       $(".uploadBtn").html('<img src="img/upload.png" width="100"><br>Uploaded ');
       if (filesPicked.length > 4) 

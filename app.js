@@ -5,11 +5,20 @@
 // Future analytics system for each file with robust services for big business
 // Verification request for large businesses and also for affiliate marketing paid plans.
 
-// For deploying, add to package.json and add Procfile
-
 // IMMEDIATE
-// Have file be associated with multiple locations
-// Sort by feature - date, profile -> verified, upvotes, likes system, title alpha
+// Work on offline loading, offline handle for navigator.geolocation -> both upload, near
+// Add favorites - Tap and hold with hammer.js to favorite
+// If media display image in map marker check if image with filepicker -> edit mongodb model in order to do so
+// Fix current map to accomodate for description in map marker - consider custom color map - and add full screen option for the map
+// Add view all files in your area map with limited radius
+// Create icons for different file types so pdf has own icon - kinda like google drive - images have previews
+// Analytics system - how many peoples downloaded your files
+// Style refresh and position to make it look nice -> FIX REFRESH SO IT WORKS WHEN NEW FILES UPLOADED
+// Add Reverse Geocoding for formatted address -> look into possible geofencing mechs
+// Make SICK 404 graphic
+// Add ability to add location instances --> SHARE INSTANCES LIKE GOOGLE DOCS WITH FRIENDS, FAMILY ETC. even own private instances and one main public stream instance (which is already built and is what this is right now)
+// Add in the file previews - add PDF.js support
+// Fix the Airclipp versions - some not working with APIs
 // Add /edit/:fileId to edit file thats within the users domain to edit --> should therefore require accessToken
 // Need separate mobile APIs --> ones that arent really that secure but cant be access by other apps, so appspecific by sending some sort of token
 // Eliminate Filepicker -> Use own uploading service with mongodb gridfs or just folders of our own with write stream
@@ -36,11 +45,10 @@ var express = require('express')
   , util = require('util')
   , request = require('request')
   , mongoose = require('mongoose')
-  , geocoder = require('geocoder')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
-var FACEBOOK_APP_ID = "536020333148727"
-var FACEBOOK_APP_SECRET = "ba7b40249abb2d1e7959268f5ae09047";
+var FACEBOOK_APP_ID = "496262620490611"
+var FACEBOOK_APP_SECRET = "f9612072b78de33bf5501eb4acfdf27a";
 
 // MongoDB set up
 
@@ -55,7 +63,6 @@ mongoose.connect(uri, function(err, res) {
       console.log('Connected to MongoDB');
 });
 
-// Add bookmarks array field for bookmarked IDs
 var userSchema = mongoose.Schema({
     name: String,
     email: String,
@@ -70,7 +77,6 @@ var User = mongoose.model('User', userSchema);
 var fileSchema = mongoose.Schema({
     name: String,
     description: String,
-    formatted_address: String,
     author: String,
     authorId: Number,
     latlng: String,
@@ -147,6 +153,7 @@ app.get('/', function(req, res){
     res.render('index', { user: req.user });
   else {
     User.find({ email: req.user._json.email }, function (req1, res1) {
+      req.user.profPic = "http://graph.facebook.com/" + req.user.id + "/picture";
       if (res1[0]) res.redirect('/near');
       else {
         createUserInDBAndSendMail(req.user._json);
@@ -165,11 +172,13 @@ app.get('/upload', ensureAuthenticated, function(req, res){
   res.render('upload', { user: req.user });
 });
 
+// New API Access token messes with functionality of deleteFile API call
 app.get('/dash', ensureAuthenticated, function(req, res){
-  apiAccessToken = Math.random().toString(36).substring(7);
+  // apiAccessToken = Math.random().toString(36).substring(7);
   res.render('dash', { user: req.user, success: false, apiAccessToken: apiAccessToken });
 });
 
+// ERROR - Invalid access token when deleting multiple files [FIXED]
 app.post('/deleteFile/:accessToken', ensureAuthenticated, function(req, res) {
   if (req.params.accessToken == apiAccessToken) {
     File.remove({ _id: req.body.fileId }, function (err) {
@@ -180,28 +189,94 @@ app.post('/deleteFile/:accessToken', ensureAuthenticated, function(req, res) {
       }
     });
   } else {
-    console.log('Invalid access token');
+    console.log('Invalid access token.');
   }
 });
 
 app.post('/upload', ensureAuthenticated, function(req, res) {
-  var latlng = req.body.latlng.split(',');
-  geocoder.reverseGeocode( latlng[0], latlng[1], function ( err, data ) {
-    req.body.formatted_address = data.results[1].formatted_address;
-    var newFile = new File(req.body);
-    newFile.save(function(err) { 
-      if (err) 
-        console.log(err); 
-      else {
-        res.redirect('/near');
-      }
-    });
+  var newFile = new File(req.body);
+  newFile.save(function(err) { 
+    if (err) 
+      console.log(err); 
+    else {
+      res.redirect('/near');
+    }
   });
 });
 
-app.get('/bookmarks', ensureAuthenticated, function(req, res){
+// ADD A BOOKMARKS PAGE LATER ON TO SAVE FILES
+// app.get('/bookmarks', ensureAuthenticated, function(req, res){
+//   apiAccessToken = Math.random().toString(36).substring(7);
+//   res.render('bookmarks', { user: req.user, success: false, apiAccessToken: apiAccessToken });
+// });
+
+// TODO:
+// Make sure all files belong to the user who uploaded it
+// Need to make API call to get File and populate text fields to edit
+// File picker to upload an updated file
+app.get('/edit/:fileId', ensureAuthenticated, function(req, res){
   apiAccessToken = Math.random().toString(36).substring(7);
-  res.render('bookmarks', { user: req.user, success: false, apiAccessToken: apiAccessToken });
+  res.render('edit', { user: req.user, success: false, apiAccessToken: apiAccessToken, fileId: req.params.fileId });
+  // Once web page loads then there should be an API call that gets the file info from the database in the meantime there is a loading screen
+});
+
+app.post('/edit', ensureAuthenticated, function(req, res){
+  // Update file with that id
+  File.findByIdAndUpdate(req.body.fileId, { $set: { name: req.body.name, description: req.body.description }}, function (err, tank) {
+    if (err)
+      console.log(err);
+    res.redirect('/dash');
+  });
+});
+
+app.get('/fileInfo/:fileId/:accessToken', ensureAuthenticated, function(req, res) {
+  if (req.params.accessToken == apiAccessToken) {
+    // if cannot parse or error 
+    // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
+    var query = File.findOne({ _id: req.params.fileId });
+    query.exec(function (err, docs) {
+      if (err)
+        res.json(err);
+      else {
+        if (docs.authorId == req.user.id)
+          res.json(docs);
+        else {
+          res.json({ error: "You are not authorized to edit this file." });
+        }
+      }
+    });
+  } else {
+    res.json({ error: "Invalid access token." });
+  }
+});
+
+app.get('/fileInfoForMap/:fileId/:accessToken', ensureAuthenticated, function(req, res) {
+  if (req.params.accessToken == apiAccessToken) {
+    // if cannot parse or error 
+    // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
+    var query = File.findOne({ _id: req.params.fileId });
+    query.exec(function (err, docs) {
+      if (err)
+        res.json(err);
+      else {
+        res.json(docs);
+      }
+    });
+  } else {
+    res.json({ error: "Invalid access token." });
+  }
+});
+
+app.get('/map/:fileId', ensureAuthenticated, function(req, res){
+  apiAccessToken = Math.random().toString(36).substring(7);
+  res.render('map', { user: req.user, success: false, apiAccessToken: apiAccessToken, fileId: req.params.fileId });
+  // Once web page loads then there should be an API call that gets the file info from the database in the meantime there is a loading screen
+});
+
+app.get('/map/:fileId/full', ensureAuthenticated, function(req, res){
+  apiAccessToken = Math.random().toString(36).substring(7);
+  res.render('full-map', { user: req.user, success: false, apiAccessToken: apiAccessToken, fileId: req.params.fileId });
+  // Once web page loads then there should be an API call that gets the file info from the database in the meantime there is a loading screen
 });
 
 // GET /auth/facebook
@@ -241,7 +316,6 @@ app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res)
   if (req.params.accessToken == apiAccessToken) {
     // if cannot parse or error 
     // res.json { error: Internal server error || invalid parameters (make sure they are integers and within the scope of worldwide lat and long) }
-    // Add geocoding here for the city
     var query = File.find();
     var resultsArr = [];
     var radius = 0.009;
@@ -261,7 +335,7 @@ app.get('/files/:lat/:lng/:accessToken', ensureAuthenticated, function(req, res)
       res.json(resultsArr);
     });
   } else {
-    res.json({ error: "Invalid access token. Note: Some men (and women) just want to watch the world burn. Don't be one of them." });
+    res.json({ error: "Invalid access token." });
   }
   // Processing logic
 });
@@ -279,11 +353,6 @@ app.get('/user/uploads', ensureAuthenticated, function(req, res) {
 
 // WE NEED A 404
 
-app.get('/:id', function(req, res) {
-  // Or maybe a could not find req.params.id
-  res.redirect('/');
-});
-
 // app.use(function(err, req, res, next){
 //   // special-case 404s,
 //   // remember you could
@@ -296,7 +365,9 @@ app.get('/:id', function(req, res) {
 //   }
 // });
 
-app.listen(3000);
+app.listen(3000, function() {
+  console.log("Listening on port 3000");
+});
 
 
 // Simple route middleware to ensure user is authenticated.
@@ -332,7 +403,7 @@ function createUserInDBAndSendMail(user) {
         service: "Gmail",
         auth: {
           user: "teamairclipp@gmail.com",
-          pass: "[OMMITTED]"
+          pass: "haha1234"
         }
       });
 
@@ -368,3 +439,7 @@ function createUserInDBAndSendMail(user) {
 
   });
 }
+
+app.get('/:someUnrecognizedRoute', function(req, res) {
+  res.render('404', { error: "404 Not Found :(" });
+});
